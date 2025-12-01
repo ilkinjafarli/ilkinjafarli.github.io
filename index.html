@@ -1,716 +1,951 @@
-</html><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ILKIN JAFARLI // SYSTEM RESUME v3.0 // HOLO-GLASS</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Orbitron:wght@400;600;900&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ILKIN JAFARLI // PERFECT_SYSTEM</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* THE NEON PALETTE */
-            --neon-cyan: #00f3ff;
-            --neon-pink: #ff0055;
-            --neon-amber: #ffaa00;
-            --void-dark: #050505;
-            
-            /* GLASS PHYSICS */
-            --glass-bg: rgba(20, 20, 25, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --glass-shine: rgba(255, 255, 255, 0.05);
-            --backdrop-blur: 24px;
+            --amber: #ffaa00;
+            --amber-bright: #ffc933;
+            --amber-glow: rgba(255, 170, 0, 0.6);
+            --void: #000000;
+            --surface: #0a0a0a;
+            --panel: #111111;
+            --text: #e8e8e8;
+            --text-dim: #888888;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: crosshair; /* Tactical Cursor */
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            background-color: var(--void-dark);
-            color: #e0e0e0;
+            background: var(--void);
+            color: var(--text);
             font-family: 'JetBrains Mono', monospace;
-            min-height: 100vh;
+            font-size: 16px;
             overflow-x: hidden;
-            perspective: 2000px; /* Deep 3D space */
-        }
-
-        /* DYNAMIC BACKGROUND (The Aurora) */
-        .ambient-void {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -2;
-            background: 
-                radial-gradient(circle at 15% 50%, rgba(0, 243, 255, 0.15), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(255, 0, 85, 0.12), transparent 25%),
-                radial-gradient(circle at 50% 80%, rgba(255, 170, 0, 0.08), transparent 40%);
-            filter: blur(60px);
-            animation: breathe 10s ease-in-out infinite alternate;
-        }
-
-        /* NOISE TEXTURE (Film Grain) */
-        .noise-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            pointer-events: none;
-        }
-
-        /* MAIN CONTAINER */
-        .hud-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 60px 20px;
-            position: relative;
-        }
-
-        /* HEADER SECTION */
-        .mega-header {
-            margin-bottom: 60px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .name-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .name-display {
-            font-family: 'Syncopate', sans-serif;
-            font-size: clamp(3rem, 8vw, 6.5rem);
-            font-weight: 900;
-            line-height: 0.9;
-            text-transform: uppercase;
-            letter-spacing: -4px;
-            color: transparent;
-            -webkit-text-stroke: 1px rgba(255,255,255,0.8);
-            position: relative;
-            z-index: 2;
-            transition: all 0.4s ease;
-        }
-        
-        /* The Glow Behind the Name */
-        .name-display::before {
-            content: 'ILKIN JAFARLI';
-            position: absolute;
-            top: 0; left: 0;
-            color: white;
-            opacity: 0.1;
-            filter: blur(15px);
-            z-index: -1;
-            text-shadow: 0 0 30px var(--neon-cyan);
-        }
-
-        .name-display:hover {
-            color: white;
-            text-shadow: 0 0 20px var(--neon-cyan), 0 0 50px var(--neon-cyan);
-            -webkit-text-stroke: 0;
-            letter-spacing: 0px;
-        }
-
-        .subtitle-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 20px;
-            padding: 8px 16px;
-            background: rgba(255, 170, 0, 0.1);
-            border: 1px solid var(--neon-amber);
-            border-radius: 2px;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 2px;
-            color: var(--neon-amber);
-            font-size: 0.9rem;
-            box-shadow: 0 0 20px rgba(255, 170, 0, 0.2);
-        }
-
-        .status-dot {
-            width: 8px; height: 8px;
-            background: var(--neon-amber);
-            border-radius: 50%;
-            animation: pulse 1.5s infinite;
-            box-shadow: 0 0 10px var(--neon-amber);
-        }
-
-        /* GRID SYSTEM */
-        .holo-grid {
-            display: grid;
-            grid-template-columns: 350px 1fr;
-            gap: 30px;
-        }
-
-        /* 3D TILT CARDS */
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--backdrop-blur)) saturate(150%);
-            -webkit-backdrop-filter: blur(var(--backdrop-blur)) saturate(150%);
-            border: 1px solid var(--glass-border);
-            border-top: 1px solid rgba(255,255,255,0.2);
-            border-left: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 30px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-
-        /* HOVER EFFECTS */
-        .glass-card:hover {
-            border-color: rgba(255,255,255,0.3);
-            box-shadow: 
-                0 30px 60px rgba(0,0,0,0.6),
-                inset 0 0 20px rgba(255,255,255,0.05);
-        }
-        
-        /* Decorative Corner Accents */
-        .glass-card::after {
-            content: '';
-            position: absolute;
-            top: -1px; right: -1px;
-            width: 20px; height: 20px;
-            border-top: 2px solid var(--neon-cyan);
-            border-right: 2px solid var(--neon-cyan);
-            border-top-right-radius: 12px;
-            opacity: 0.5;
-            transition: opacity 0.3s;
-        }
-        .glass-card:hover::after { opacity: 1; box-shadow: 0 0 15px var(--neon-cyan); }
-
-        .card-header {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            letter-spacing: 3px;
-            color: rgba(255,255,255,0.4);
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 10px;
-        }
-        
-        .sys-id { color: var(--neon-cyan); font-weight: bold; opacity: 0.7; }
-
-        /* METRICS STYLING */
-        .metrics-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .metric-box {
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            text-align: center;
-            border-radius: 6px;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
-        }
-
-        .metric-box:hover {
-            background: rgba(0, 243, 255, 0.05);
-            border-color: var(--neon-cyan);
-            transform: translateY(-2px);
-        }
-
-        .metric-val {
-            display: block;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-        }
-
-        .metric-lbl {
-            font-size: 0.65rem;
-            color: #888;
-            letter-spacing: 1px;
-            margin-top: 5px;
-        }
-
-        /* CONTACT LINKS */
-        .contact-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 4px;
-            text-decoration: none;
-            color: #ccc;
-            border-left: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .contact-row:hover {
-            background: rgba(255,255,255,0.08);
-            border-left-color: var(--neon-pink);
-            padding-left: 20px;
-            color: white;
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.1);
-        }
-
-        /* EXPERIENCE TIMELINE */
-        .timeline-item {
-            position: relative;
-            padding-left: 40px;
-            margin-bottom: 40px;
-        }
-
-        .timeline-line {
-            position: absolute;
-            left: 11px;
-            top: 10px;
-            bottom: -50px;
-            width: 2px;
-            background: linear-gradient(to bottom, var(--neon-cyan), transparent);
-            opacity: 0.3;
-        }
-        
-        .timeline-item:last-child .timeline-line { display: none; }
-
-        .timeline-dot {
-            position: absolute;
-            left: 0;
-            top: 5px;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid var(--neon-cyan);
-            background: var(--void-dark);
-            box-shadow: 0 0 10px var(--neon-cyan);
-            display: grid;
-            place-items: center;
-        }
-
-        .timeline-dot::after {
-            content: '';
-            width: 8px; height: 8px;
-            background: white;
-            border-radius: 50%;
-        }
-
-        .job-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
-            color: white;
-            margin-bottom: 5px;
-        }
-
-        .job-company {
-            color: var(--neon-cyan);
-            font-weight: 700;
-            letter-spacing: 1px;
-            font-size: 0.9rem;
-            display: inline-block;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
-        }
-
-        .job-date {
-            float: right;
-            font-size: 0.8rem;
-            color: #666;
-            font-weight: bold;
-        }
-
-        .job-bullets li {
-            list-style: none;
-            margin-bottom: 12px;
-            position: relative;
-            padding-left: 20px;
-            color: #bbb;
             line-height: 1.6;
         }
 
-        .job-bullets li::before {
-            content: '>';
-            position: absolute;
-            left: 0;
-            color: var(--neon-pink);
-            font-weight: bold;
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--void); }
+        ::-webkit-scrollbar-thumb { background: var(--amber); border-radius: 3px; }
+
+        #grid-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.08;
+            pointer-events: none;
         }
+
+        .chassis {
+            position: relative;
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            min-height: 100vh;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid rgba(255,170,0,0.1);
+            border-right: 1px solid rgba(255,170,0,0.1);
+            z-index: 1;
+        }
+
+        .sidebar {
+            padding: 60px 30px;
+            background: linear-gradient(180deg, rgba(10,10,10,0.95), rgba(0,0,0,0.98));
+            border-right: 1px solid rgba(255,170,0,0.2);
+            position: relative;
+        }
+
+        .sticky-wrapper {
+            position: sticky;
+            top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .disc-container {
+            width: 260px;
+            height: 260px;
+            margin-bottom: 40px;
+            perspective: 1200px;
+            position: relative;
+        }
+
+        .disc-3d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transform: rotateX(20deg) rotateY(-10deg);
+            transition: transform 0.15s ease-out;
+            animation: discFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes discFloat {
+            0%, 100% { transform: rotateX(20deg) rotateY(-10deg) translateZ(0); }
+            50% { transform: rotateX(25deg) rotateY(-5deg) translateZ(20px); }
+        }
+
+        .disc-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+        }
+
+        .layer-back { transform: translateZ(-15px); opacity: 0.3; filter: brightness(0.4); }
+        .layer-mid { transform: translateZ(-8px); opacity: 0.5; filter: brightness(0.6); }
+        .layer-main { transform: translateZ(0px); }
+        .layer-glow { transform: translateZ(8px); opacity: 0.25; filter: blur(4px); }
+
+        .rinzler-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 0 20px rgba(255,170,0,0.4));
+        }
+
+        .disc-segment {
+            fill: #0a0a0a;
+            stroke: #222;
+            stroke-width: 0.5;
+        }
+
+        .light-channel {
+            fill: none;
+            stroke: var(--amber);
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .light-channel.bright {
+            stroke: var(--amber-bright);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px var(--amber));
+        }
+
+        .spin-outer { transform-origin: center; animation: spin 12s linear infinite; }
+        .spin-inner { transform-origin: center; animation: spin-reverse 8s linear infinite; }
+        .pulse-ring { animation: pulse 3s ease-in-out infinite; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin-reverse { to { transform: rotate(-360deg); } }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; filter: drop-shadow(0 0 15px var(--amber)); }
+        }
+
+        .name-block {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .name-glitch {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 0.95;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px rgba(255,170,0,0.3);
+            margin-bottom: 12px;
+        }
+
+        .role-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            color: var(--amber);
+            border: 1px solid var(--amber);
+            padding: 6px 14px;
+            letter-spacing: 2px;
+            background: rgba(255,170,0,0.05);
+        }
+
+        .module {
+            width: 100%;
+            margin-bottom: 35px;
+        }
+
+        .module-title {
+            font-family: 'Orbitron';
+            font-size: 0.7rem;
+            color: var(--amber);
+            letter-spacing: 3px;
+            border-bottom: 1px solid rgba(255,170,0,0.2);
+            padding-bottom: 8px;
+            margin-bottom: 18px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .metric-box {
+            background: rgba(20,20,20,0.8);
+            border: 1px solid #2a2a2a;
+            padding: 14px 8px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: var(--amber);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .metric-box:hover {
+            border-color: var(--amber);
+            box-shadow: 0 0 15px rgba(255,170,0,0.15);
+        }
+
+        .metric-box:hover::before { transform: scaleX(1); }
+
+        .metric-val {
+            font-family: 'Orbitron';
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            display: block;
+        }
+
+        .metric-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+
+        .achievement:hover {
+            padding-left: 10px;
+            border-bottom-color: var(--amber);
+        }
+
+        .achievement-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,170,0,0.1);
+            border: 1px solid var(--amber);
+            color: var(--amber);
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .achievement-text {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .link-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 11px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: #aaa;
+            text-decoration: none;
+            font-size: 0.88rem;
+            transition: all 0.25s;
+        }
+
+        .link-item:hover {
+            color: var(--amber);
+            padding-left: 10px;
+        }
+
+        .main-content {
+            padding: 80px 60px;
+            position: relative;
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .summary {
+            background: rgba(255,170,0,0.03);
+            border-left: 3px solid var(--amber);
+            padding: 30px;
+            margin-bottom: 60px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        .summary p { margin-bottom: 15px; }
+        .summary p:last-child { margin-bottom: 0; }
 
         .highlight {
-            color: var(--neon-amber);
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 170, 0, 0.3);
+            color: var(--amber);
+            font-weight: 700;
         }
 
-        /* SKILL CHIPS */
-        .skill-cluster {
+        .section-head {
+            font-family: 'Orbitron';
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 45px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-head::before {
+            content: '//';
+            color: var(--amber);
+            margin-right: 15px;
+            font-size: 1.4rem;
+        }
+
+        .exp-entry {
+            border-left: 1px solid #333;
+            padding-left: 30px;
+            margin-bottom: 55px;
+            position: relative;
+            transition: border-color 0.3s;
+        }
+
+        .exp-entry::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 0;
+            width: 8px;
+            height: 8px;
+            background: var(--void);
+            border: 2px solid var(--amber);
+            transform: rotate(45deg);
+            transition: all 0.3s;
+        }
+
+        .exp-entry:hover {
+            border-left-color: var(--amber);
+        }
+
+        .exp-entry:hover::before {
+            background: var(--amber);
+            box-shadow: 0 0 12px var(--amber-glow);
+        }
+
+        .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+
+        .exp-title {
+            font-family: 'Orbitron';
+            font-size: 1.45rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .exp-date {
+            font-size: 0.8rem;
+            color: var(--amber);
+            background: rgba(255,170,0,0.1);
+            padding: 3px 8px;
+            font-weight: 600;
+        }
+
+        .exp-company {
+            display: block;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            letter-spacing: 1.2px;
+            margin-bottom: 15px;
+        }
+
+        .client-box {
+            margin-top: 25px;
+            background: rgba(25,25,25,0.6);
+            border: 1px solid #2a2a2a;
+            padding: 22px;
+            position: relative;
+        }
+
+        .client-box::before {
+            content: '';
+            position: absolute;
+            top: -1px; left: -1px;
+            width: 12px; height: 12px;
+            border-top: 2px solid var(--amber);
+            border-left: 2px solid var(--amber);
+        }
+
+        .client-box::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; right: -1px;
+            width: 12px; height: 12px;
+            border-bottom: 2px solid var(--amber);
+            border-right: 2px solid var(--amber);
+        }
+
+        .client-label {
+            font-family: 'Orbitron';
+            font-size: 0.85rem;
+            color: var(--amber);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .bullet-list {
+            list-style: none;
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 22px;
+            margin-bottom: 14px;
+            color: #ccc;
+            line-height: 1.65;
+        }
+
+        .bullet-list li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--amber);
+            font-family: 'Orbitron';
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .skill-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 25px;
         }
 
-        .skill-tag {
-            padding: 8px 12px;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
+        .skill-chip {
+            background: #0f0f0f;
+            border: 1px solid #2a2a2a;
+            padding: 7px 15px;
+            font-size: 0.85rem;
             color: #aaa;
-            font-size: 0.75rem;
-            border-radius: 4px;
-            transition: all 0.2s ease;
+            transition: all 0.25s;
+            cursor: default;
         }
 
-        .skill-tag:hover {
-            background: var(--neon-cyan);
-            color: black;
-            font-weight: bold;
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 15px var(--neon-cyan);
+        .skill-chip:hover {
+            border-color: var(--amber);
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255,170,0,0.2);
+            transform: translateY(-3px);
         }
 
-        /* ANIMATIONS */
-        @keyframes breathe {
-            0% { opacity: 0.5; transform: scale(1); }
-            100% { opacity: 0.8; transform: scale(1.1); }
+        .cta-zone {
+            margin-top: 80px;
+            padding: 45px;
+            background: rgba(255,170,0,0.02);
+            border: 1px solid rgba(255,170,0,0.15);
+            text-align: center;
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 170, 0, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 170, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 170, 0, 0); }
+        .cta-title {
+            font-family: 'Orbitron';
+            font-size: 1.1rem;
+            color: var(--amber);
+            letter-spacing: 3px;
+            margin-bottom: 15px;
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .holo-grid { grid-template-columns: 1fr; }
-            .name-display { font-size: 4rem; }
-            .job-date { float: none; display: block; margin-top: 5px; color: var(--neon-pink); }
+        .cta-text {
+            color: var(--text-dim);
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 13px 35px;
+            font-family: 'Orbitron';
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .cta-primary {
+            background: var(--amber);
+            color: #000;
+            border: 2px solid var(--amber);
+        }
+
+        .cta-primary:hover {
+            background: transparent;
+            color: var(--amber);
+            box-shadow: 0 0 20px rgba(255,170,0,0.3);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--amber);
+            border: 2px solid var(--amber);
+        }
+
+        .cta-secondary:hover {
+            background: var(--amber);
+            color: #000;
+        }
+
+        @media screen and (min-width: 2560px) {
+            body { font-size: 18px; }
+            .chassis { max-width: 2200px; grid-template-columns: 500px 1fr; }
+            .disc-container { width: 320px; height: 320px; }
+            .name-glitch { font-size: 3.8rem; }
+        }
+
+        @media screen and (max-width: 1200px) {
+            .chassis { grid-template-columns: 360px 1fr; }
+            .main-content { padding: 60px 40px; }
+        }
+
+        @media screen and (max-width: 1000px) {
+            .chassis { grid-template-columns: 1fr; }
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid rgba(255,170,0,0.2);
+                padding: 50px 30px;
+            }
+            .sticky-wrapper { position: relative; top: 0; }
+            .metrics { max-width: 500px; margin: 0 auto; }
+            .main-content { padding: 50px 30px; }
+        }
+
+        @media screen and (max-width: 600px) {
+            body { font-size: 14px; }
+            .disc-container { width: 200px; height: 200px; }
+            .name-glitch { font-size: 2.2rem; }
+            .main-content { padding: 40px 20px; }
+            .cta-buttons { flex-direction: column; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="ambient-void"></div>
-    <div class="noise-overlay"></div>
+    <canvas id="grid-canvas"></canvas>
 
-    <div class="hud-container">
+    <div class="chassis">
         
-        <header class="mega-header">
-            <div class="name-wrapper">
-                <h1 class="name-display" id="glitch-name">ILKIN JAFARLI</h1>
-            </div>
-            <div>
-                <div class="subtitle-badge">
-                    <div class="status-dot"></div>
-                    ACCOUNT & COMMUNITY OPERATIONS SPECIALIST
-                </div>
-            </div>
-        </header>
-
-        <div class="holo-grid">
-            
-            <aside>
-                <div class="glass-card" data-tilt>
-                    <div class="card-header">
-                        PERFORMANCE DATA
-                        <span class="sys-id">MET_01</span>
-                    </div>
-                    <div class="metrics-container">
-                        <div class="metric-box">
-                            <span class="metric-val" style="color:var(--neon-amber)">25%</span>
-                            <span class="metric-lbl">GROWTH</span>
-                        </div>
-                        <div class="metric-box">
-                            <span class="metric-val" style="color:var(--neon-cyan)">65%</span>
-                            <span class="metric-lbl">EFFICIENCY</span>
-                        </div>
-                        <div class="metric-box">
-                            <span class="metric-val">8+Y</span>
-                            <span class="metric-lbl">EXP</span>
-                        </div>
-                        <div class="metric-box">
-                            <span class="metric-val">4.2K</span>
-                            <span class="metric-lbl">COMMUNITY</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-card" data-tilt>
-                    <div class="card-header">
-                        COMMS UPLINK
-                        <span class="sys-id">LNK_02</span>
-                    </div>
-                    <a href="mailto:ilkin.jafarli@proton.me" class="contact-row">
-                        <span>EMAIL</span>
-                        <span style="color:var(--neon-cyan)">→</span>
-                    </a>
-                    <a href="https://linkedin.com/in/ilkinjafarli" target="_blank" class="contact-row">
-                        <span>LINKEDIN</span>
-                        <span style="color:var(--neon-cyan)">→</span>
-                    </a>
-                    <div class="contact-row" style="cursor: default; border:none;">
-                        <span>LOCATION</span>
-                        <span style="color:var(--neon-amber)">BAKU/REMOTE</span>
-                    </div>
-                </div>
-
-                <div class="glass-card" data-tilt>
-                    <div class="card-header">
-                        LANGUAGE PACKS
-                        <span class="sys-id">LNG_03</span>
-                    </div>
-                    <div style="display:flex; flex-direction:column; gap:12px;">
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
-                            <span>English</span>
-                            <span style="color:var(--neon-cyan)">FLUENT</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
-                            <span>Azerbaijani</span>
-                            <span style="color:var(--neon-pink)">NATIVE</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
-                            <span>Turkish</span>
-                            <span style="color:var(--neon-cyan)">FLUENT</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:8px;">
-                            <span>Russian</span>
-                            <span style="color:var(--neon-cyan)">FLUENT</span>
-                        </div>
-                        <div style="display:flex; justify-content:space-between;">
-                            <span>Korean</span>
-                            <span style="color:#666">INTERM.</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-card" data-tilt>
-                    <div class="card-header">
-                        KNOWLEDGE BASE
-                        <span class="sys-id">EDU_04</span>
-                    </div>
-                    <h3 style="color:white; font-family:'Orbitron'; margin-bottom:5px;">Ajou University</h3>
-                    <p style="color:#888; font-size:0.85rem; line-height:1.6;">
-                        Suwon, South Korea (2009-2013)<br>
-                        BBA - Marketing<br>
-                        <span class="highlight">Korean Government Scholarship (KGSP)</span>
-                    </p>
-                </div>
-            </aside>
-
-            <main>
+        <aside class="sidebar">
+            <div class="sticky-wrapper fade-in">
                 
-                <div class="glass-card" data-tilt>
-                    <div class="card-header">
-                        EXECUTIVE SUMMARY
-                        <span class="sys-id">CORE_01</span>
-                    </div>
-                    <p style="font-size:1.1rem; line-height:1.7; color:#ddd; margin-bottom:20px;">
-                        <strong style="color:white;">Web3 Account Manager</strong> with 8+ years scaling fintech and DeFi communities across U.S. and EU markets. Selected as <span class="highlight">Binance CIS Regional Coach</span> for Web3 education initiatives.
-                    </p>
-                    <p style="font-size:1rem; line-height:1.7; color:#bbb;">
-                        Proven track record building revenue-generating community programs (<span class="highlight">25% platform growth</span>), architecting support systems that reduced overhead <span class="highlight">65%</span>, and managing high-touch B2B relationships. Native fluency in CIS languages.
-                    </p>
-                </div>
-
-                <div class="glass-card" data-tilt>
-                    <div class="card-header">
-                        OPERATION LOG
-                        <span class="sys-id">CORE_02</span>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-line"></div>
-                        <div class="timeline-dot"></div>
-                        <h3 class="job-title">Independent DeFi Trader</h3>
-                        <span class="job-company">MARKET ANALYST | REMOTE</span>
-                        <span class="job-date">MAY 2025 – PRESENT</span>
-                        <p style="color:#888; font-style:italic; margin:10px 0;">Intentional career pause for parental responsibilities (7-month-old daughter) while maintaining active market involvement.</p>
-                        <ul class="job-bullets">
-                            <li><strong>Portfolio Management:</strong> Generated consistent $4-5K monthly returns through active CEX/DEX trading strategies</li>
-                            <li><strong>Protocol Research:</strong> Due diligence on 15+ emerging L1/L2 solutions</li>
-                            <li><strong>Market Intelligence:</strong> Maintained current knowledge of DeFi trends</li>
-                        </ul>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-line"></div>
-                        <div class="timeline-dot"></div>
-                        <h3 class="job-title">Web3 Regional Coach</h3>
-                        <span class="job-company" style="color:var(--neon-amber)">BINANCE CIS</span>
-                        <span class="job-date">APR 2025 – MAY 2025</span>
-                        <p style="color:#888; font-style:italic; margin:10px 0;">Selected from regional applicant pool to represent Binance brand.</p>
-                        <ul class="job-bullets">
-                            <li><strong>Educational Leadership:</strong> Led "Binance Web3 101 Intensive" training 50+ local investors</li>
-                            <li><strong>Engagement Metrics:</strong> 90%+ attendance, 4.7/5.0 feedback score</li>
-                            <li><strong>Community Impact:</strong> Generated 1,200+ engagement interactions</li>
-                        </ul>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-line"></div>
-                        <div class="timeline-dot"></div>
-                        <h3 class="job-title">Operations & Partnerships Manager</h3>
-                        <span class="job-company">NEXTOOL AI</span>
-                        <span class="job-date">OCT 2024 – APR 2025</span>
-                        <ul class="job-bullets">
-                            <li><strong>B2B Growth:</strong> <span class="highlight">40% increase</span> in platform tool submissions</li>
-                            <li><strong>Operational Systems:</strong> Reduced tool approval cycle from 14 days to 6 days</li>
-                            <li><strong>Stakeholder Management:</strong> Managed 25+ active tool partners</li>
-                        </ul>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-line"></div>
-                        <div class="timeline-dot"></div>
-                        <h3 class="job-title">Founder</h3>
-                        <span class="job-company">REHYPE (WEB3 CONSULTING AGENCY)</span>
-                        <span class="job-date">DEC 2021 – SEP 2024</span>
+                <div class="disc-container">
+                    <div class="disc-3d" id="disc">
                         
-                        <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:8px; margin-top:15px; border-left:3px solid var(--neon-cyan);">
-                            <div style="color:var(--neon-cyan); font-weight:bold; margin-bottom:8px;">CLIENT: PDS (DeFi Protocol)</div>
-                            <ul class="job-bullets">
-                                <li><strong>Community Scale:</strong> Discord (4.2K) & Telegram (2.8K) with 68% engagement</li>
-                                <li><strong>Support Architecture:</strong> Reduced tickets <span class="highlight">65%</span> via self-serve Zendesk</li>
-                                <li><strong>Campaign Execution:</strong> Driven <span class="highlight">30% MAU increase</span></li>
-                                <li><strong>VIP Relations:</strong> Managed top 50 accounts ($2M+ TVL)</li>
-                            </ul>
+                        <div class="disc-layer layer-back">
+                            <svg class="rinzler-svg" viewBox="0 0 200 200">
+                                <circle cx="100" cy="100" r="88" fill="#050505"/>
+                            </svg>
                         </div>
 
-                        <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:8px; margin-top:15px; border-left:3px solid var(--neon-pink);">
-                            <div style="color:var(--neon-pink); font-weight:bold; margin-bottom:8px;">CLIENT: Accointing (SaaS)</div>
-                            <ul class="job-bullets">
-                                <li><strong>Rapid Promotion:</strong> Elevated to Head of Community within 30 days</li>
-                                <li><strong>Community Scaling:</strong> 338% growth maintaining 75%+ weekly engagement</li>
-                                <li><strong>Revenue Program:</strong> Driven <span class="highlight">25% platform growth</span> via CPA Partner Program</li>
-                                <li><strong>Retention:</strong> Improved retention by 20% (72%→86%)</li>
-                            </ul>
+                        <div class="disc-layer layer-mid">
+                            <svg class="rinzler-svg" viewBox="0 0 200 200">
+                                <circle cx="100" cy="100" r="85" fill="none" stroke="#111" stroke-width="12"/>
+                            </svg>
                         </div>
-                    </div>
 
-                    <div class="timeline-item">
-                        <div class="timeline-line"></div>
-                        <div class="timeline-dot"></div>
-                        <h3 class="job-title">Executive Assistant</h3>
-                        <span class="job-company">PORT OF BAKU</span>
-                        <span class="job-date">OCT 2018 – OCT 2020</span>
-                        <ul class="job-bullets">
-                            <li><strong>Strategic Comms:</strong> "Belt and Road Initiative" PR contributing to <span class="highlight">35% trade increase</span></li>
-                            <li><strong>Cross-Cultural:</strong> Liaison for Azerbaijani, Chinese, Turkish, and Russian delegations</li>
-                        </ul>
-                    </div>
+                        <div class="disc-layer layer-main">
+                            <svg class="rinzler-svg" viewBox="0 0 200 200">
+                                
+                                <g class="spin-outer">
+                                    <path d="M 100,15 L 130,30 L 130,60 L 100,75" class="disc-segment"/>
+                                    <path d="M 100,15 L 70,30 L 70,60 L 100,75" class="disc-segment"/>
+                                    <path d="M 130,60 L 155,100 L 130,140" class="disc-segment"/>
+                                    <path d="M 70,60 L 45,100 L 70,140" class="disc-segment"/>
+                                    <path d="M 130,140 L 130,170 L 100,185" class="disc-segment"/>
+                                    <path d="M 70,140 L 70,170 L 100,185" class="disc-segment"/>
+                                    
+                                    <path d="M 100,20 A 80,80 0 0,1 156,44" class="light-channel bright"/>
+                                    <path d="M 100,180 A 80,80 0 0,1 44,156" class="light-channel bright"/>
+                                </g>
 
-                </div>
+                                <g class="spin-inner">
+                                    <circle cx="100" cy="100" r="60" fill="none" stroke="#ffaa00" stroke-width="2" stroke-dasharray="15,8,5,8" class="light-channel pulse-ring"/>
+                                    <circle cx="100" cy="100" r="52" fill="none" stroke="#ffaa00" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                </g>
 
-                <div class="glass-card" data-tilt>
-                    <div class="card-header">
-                        TECHNICAL MATRIX
-                        <span class="sys-id">CORE_03</span>
-                    </div>
-                    
-                    <div style="margin-bottom:20px;">
-                        <div style="font-size:0.8rem; color:#666; margin-bottom:10px; letter-spacing:1px;">ACCOUNT MANAGEMENT</div>
-                        <div class="skill-cluster">
-                            <span class="skill-tag">VIP Strategy</span>
-                            <span class="skill-tag">Partner Onboarding</span>
-                            <span class="skill-tag">Churn Reduction</span>
-                            <span class="skill-tag">Negotiation</span>
-                            <span class="skill-tag">Relationship Mapping</span>
+                                <circle cx="100" cy="100" r="28" fill="#0a0a0a" stroke="#ffaa00" stroke-width="2"/>
+                                
+                                <rect x="88" y="90" width="4" height="20" fill="#ffaa00"/>
+                                <rect x="86" y="88" width="8" height="2" fill="#ffaa00"/>
+                                <rect x="86" y="110" width="8" height="2" fill="#ffaa00"/>
+                                
+                                <path d="M 106,90 L 106,106 Q 106,110 102,110 L 100,110" fill="none" stroke="#ffaa00" stroke-width="4" stroke-linecap="square"/>
+                                <circle cx="106" cy="90" r="1.5" fill="#fff"/>
+                                <circle cx="102" cy="110" r="1.5" fill="#fff"/>
+                                
+                                <circle cx="100" cy="100" r="38" fill="none" stroke="#222" stroke-width="0.5" stroke-dasharray="2,2"/>
+                            </svg>
                         </div>
-                    </div>
 
-                    <div style="margin-bottom:20px;">
-                        <div style="font-size:0.8rem; color:#666; margin-bottom:10px; letter-spacing:1px;">WEB3 TECHNICAL</div>
-                        <div class="skill-cluster">
-                            <span class="skill-tag">On-Chain Analytics</span>
-                            <span class="skill-tag">Arkham Intel</span>
-                            <span class="skill-tag">Wallet Ops</span>
-                            <span class="skill-tag">DeFi Protocols</span>
-                            <span class="skill-tag">HubSpot</span>
-                            <span class="skill-tag">Notion</span>
+                        <div class="disc-layer layer-glow">
+                            <svg class="rinzler-svg" viewBox="0 0 200 200">
+                                <circle cx="100" cy="100" r="82" fill="none" stroke="#ffaa00" stroke-width="6" opacity="0.3"/>
+                            </svg>
                         </div>
-                    </div>
 
-                    <div>
-                        <div style="font-size:0.8rem; color:#666; margin-bottom:10px; letter-spacing:1px;">SUPPORT SYSTEMS</div>
-                        <div class="skill-cluster">
-                            <span class="skill-tag">Zendesk Architecture</span>
-                            <span class="skill-tag">Intercom</span>
-                            <span class="skill-tag">AI Agents</span>
-                            <span class="skill-tag">Knowledge Base</span>
-                        </div>
                     </div>
                 </div>
 
-            </main>
-        </div>
+                <div class="name-block">
+                    <div class="name-glitch">ILKIN<br>JAFARLI</div>
+                    <div class="role-tag">ACCOUNT OPS // STRATEGIST</div>
+                </div>
+
+                <div class="module">
+                    <div class="module-title">SYSTEM METRICS</div>
+                    <div class="metrics">
+                        <div class="metric-box">
+                            <span class="metric-val">25%</span>
+                            <span class="metric-label">GROWTH</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val">65%</span>
+                            <span class="metric-label">EFFICIENCY</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val">8Y</span>
+                            <span class="metric-label">WEB3 EXP</span>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-val">7K+</span>
+                            <span class="metric-label">NODES</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-title">KEY ACHIEVEMENTS</div>
+                    <div class="achievement">
+                        <div class="achievement-icon">★</div>
+                        <div class="achievement-text">Binance CIS Regional Coach</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">↗</div>
+                        <div class="achievement-text">338% Discord Growth</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">⚡</div>
+                        <div class="achievement-text">15-min Crisis Response SLA</div>
+                    </div>
+                    <div class="achievement">
+                        <div class="achievement-icon">◆</div>
+                        <div class="achievement-text">KGSP Scholar (S. Korea)</div>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-title">COMM LINKS</div>
+                    <a href="mailto:ilkin.jafarli@proton.me" class="link-item">
+                        <span>// EMAIL</span>
+                        <span>PROTON</span>
+                    </a>
+                    <a href="https://linkedin.com/in/ilkinjafarli" target="_blank" class="link-item">
+                        <span>// LINKEDIN</span>
+                        <span>CONNECT</span>
+                    </a>
+                    <div class="link-item" style="pointer-events: none; cursor: default;">
+                        <span>// SECTOR</span>
+                        <span style="color: var(--amber);">BAKU / REMOTE</span>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-title">LANGUAGES</div>
+                    <div class="link-item" style="pointer-events: none; cursor: default;">
+                        <span>AZERBAIJANI</span>
+                        <span style="color: var(--amber);">NATIVE</span>
+                    </div>
+                    <div class="link-item" style="pointer-events: none; cursor: default;">
+                        <span>ENGLISH</span>
+                        <span style="color: var(--amber);">FLUENT</span>
+                    </div>
+                    <div class="link-item" style="pointer-events: none; cursor: default;">
+                        <span>TURKISH / RUSSIAN</span>
+                        <span style="color: var(--amber);">FLUENT</span>
+                    </div>
+                    <div class="link-item" style="pointer-events: none; cursor: default;">
+                        <span>KOREAN</span>
+                        <span style="opacity: 0.6;">INTERMEDIATE</span>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="module-title">INITIALIZATION</div>
+                    <div style="margin-bottom: 6px; font-weight: 700; font-family: 'Orbitron'; font-size: 0.9rem;">Ajou University</div>
+                    <div style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.5;">
+                        Suwon, South Korea<br>
+                        BBA - Marketing<br>
+                        <span style="color: var(--amber);">KGSP Scholar Program</span>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <div class="summary fade-in delay-1">
+                <p>
+                    <strong>Web3 Account Manager</strong> with 8+ years scaling crypto and DeFi fintech ecosystems. Selected as <span class="highlight">Binance CIS Regional Coach</span> to educate 50+ investors across structured Web3 curriculum.
+                </p>
+                <p>
+                    Track record: revenue-driving community programs (<span class="highlight">25% platform growth</span>, 2K paid users), support automation reducing ticket volume <span class="highlight">65%</span>, and managing high-value B2B partnerships. Native fluency in CIS markets (Azerbaijani, Russian, Turkish, English).
+                </p>
+            </div>
+
+            <div class="section-head fade-in delay-2">CYCLE HISTORY</div>
+
+            <div class="exp-entry fade-in delay-3">
+                <div class="exp-header">
+                    <div class="exp-title">Independent DeFi Trader</div>
+                    <div class="exp-date">MAY 2025 – PRESENT</div>
+                </div>
+                <span class="exp-company">MARKET ANALYST | REMOTE</span>
+                <p style="margin-bottom: 15px; font-style: italic; color: var(--text-dim); font-size: 0.9rem;">Active market participation during parental career break.</p>
+                <ul class="bullet-list">
+                    <li><strong>Trading Strategy:</strong> Executed CEX/DEX strategies focusing on risk-adjusted returns in volatile markets.</li>
+                    <li><strong>Protocol Research:</strong> Analyzed 15+ emerging L1/L2 blockchain solutions, evaluating tokenomics and governance models.</li>
+                    <li><strong>Market Intelligence:</strong> Maintained current knowledge of DeFi trends, regulatory developments, and ecosystem evolution.</li>
+                </ul>
+            </div>
+
+            <div class="exp-entry fade-in delay-3">
+                <div class="exp-header">
+                    <div class="exp-title">Web3 Regional Coach</div>
+                    <div class="exp-date">APR 2025 – MAY 2025</div>
+                </div>
+                <span class="exp-company">BINANCE CIS | SELECTED EDUCATOR</span>
+                <ul class="bullet-list">
+                    <li><strong>Program Leadership:</strong> Handpicked to lead "Binance Web3 101 Intensive" educating 50+ local investors across 8 live sessions covering DeFi, wallets, and security protocols.</li>
+                    <li><strong>Engagement Metrics:</strong> Achieved 90%+ attendance rate, 4.7/5.0 participant satisfaction score, and 85% course completion rate.</li>
+                    <li><strong>Community Impact:</strong> Generated 1,200+ engagement interactions across Telegram and Discord channels.</li>
+                </ul>
+            </div>
+
+            <div class="exp-entry fade-in delay-3">
+                <div class="exp-header">
+                    <div class="exp-title">Ops & Partnerships Manager</div>
+                    <div class="exp-date">OCT 2024 – APR 2025</div>
+                </div>
+                <span class="exp-company">NEXTOOL AI</span>
+                <ul class="bullet-list">
+                    <li><strong>B2B Growth:</strong> Drove strategic partner outreach resulting in <span class="highlight">40% increase</span> in AI tool submissions to platform directory.</li>
+                    <li><strong>Process Optimization:</strong> Designed and implemented SOPs that reduced tool approval cycle from 14 days to 6 days through workflow automation.</li>
+                    <li><strong>Partnership Management:</strong> Maintained relationships with 25+ active tool partners, ensuring integration quality and platform standards compliance.</li>
+                </ul>
+            </div>
+
+            <div class="exp-entry fade-in delay-3">
+                <div class="exp-header">
+                    <div class="exp-title">Senior Account Manager</div>
+                    <div class="exp-date">DEC 2021 – SEP 2024</div>
+                </div>
+                <span class="exp-company">REHYPE (WEB3 AGENCY)</span>
+                
+                <div class="client-box">
+                    <div class="client-label">CLIENT: PDS (DeFi Protocol)</div>
+                    <ul class="bullet-list">
+                        <li><strong>Community Management:</strong> Led Discord (4.2K members) and Telegram (2.8K members) communities with 68% average engagement rate.</li>
+                        <li><strong>Support Infrastructure:</strong> Architected self-service Zendesk knowledge base with AI-assisted responses, reducing support ticket volume by <span class="highlight">65%</span>.</li>
+                        <li><strong>Product Launches:</strong> Coordinated 4 major feature launches driving <span class="highlight">30% MAU increase</span> through strategic announcements and education campaigns.</li>
+                        <li><strong>Crisis Management:</strong> Led incident communications during security events with 15-minute response time SLA, maintaining user trust.</li>
+                        <li><strong>VIP Account Support:</strong> Provided white-glove service to top 50 high-value accounts ($2M+ TVL) with dedicated communication channels.</li>
+                    </ul>
+                </div>
+
+                <div class="client-box">
+                    <div class="client-label">CLIENT: Accointing (Crypto Tax SaaS)</div>
+                    <ul class="bullet-list">
+                        <li><strong>Community Growth:</strong> Scaled Discord community from 800 to 3,500+ members (338% growth) through strategic engagement and ambassador programs.</li>
+                        <li><strong>Revenue Generation:</strong> Launched CPA Partner Program connecting tax professionals with platform, resulting in <span class="highlight">25% platform user growth</span> (2,000+ new paid subscribers).</li>
+                        <li><strong>Content Strategy:</strong> Developed educational content on crypto taxation generating 120,000+ impressions across social channels.</li>
+                        <li><strong>User Retention:</strong> Implemented feedback collection and feature request systems contributing to 20% improvement in customer retention.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="exp-entry fade-in delay-3">
+                <div class="exp-header">
+                    <div class="exp-title">Executive Assistant</div>
+                    <div class="exp-date">OCT 2018 – OCT 2020</div>
+                </div>
+                <span class="exp-company">PORT OF BAKU</span>
+                <ul class="bullet-list">
+                    <li><strong>Strategic Communications:</strong> Managed PR and stakeholder communications for Belt and Road Initiative integration, supporting <span class="highlight">35% trade volume increase</span>.</li>
+                    <li><strong>Operations Support:</strong> Coordinated complex logistics documentation systems and international shipping procedures.</li>
+                    <li><strong>Cross-Cultural Relations:</strong> Facilitated diplomatic communications across Azerbaijan, China, Turkey, and Russia stakeholders.</li>
+                </ul>
+            </div>
+
+            <div class="section-head fade-in delay-3">ACTIVE SUBROUTINES</div>
+            
+            <div class="skill-grid fade-in delay-3">
+                <div class="skill-chip">VIP Strategy</div>
+                <div class="skill-chip">Account Management</div>
+                <div class="skill-chip">Zendesk Architecture</div>
+                <div class="skill-chip">Discord/Telegram</div>
+                <div class="skill-chip">On-Chain Analytics</div>
+                <div class="skill-chip">Crisis Communications</div>
+                <div class="skill-chip">Dune/Nansen</div>
+                <div class="skill-chip">SOP Design</div>
+                <div class="skill-chip">Partnership Development</div>
+                <div class="skill-chip">HubSpot CRM</div>
+                <div class="skill-chip">Intercom</div>
+                <div class="skill-chip">Community Growth</div>
+                <div class="skill-chip">DeFi Protocols</div>
+                <div class="skill-chip">Notion</div>
+            </div>
+
+            <div class="cta-zone fade-in delay-3">
+                <div class="cta-title">// INITIATE CONTACT SEQUENCE</div>
+                <div class="cta-text">Ready to discuss Web3 account management, community growth, or DeFi opportunities?</div>
+                <div class="cta-buttons">
+                    <a href="mailto:ilkin.jafarli@proton.me" class="cta-btn cta-primary">SEND MESSAGE</a>
+                    <a href="https://linkedin.com/in/ilkinjafarli" target="_blank" class="cta-btn cta-secondary">VIEW PROFILE</a>
+                </div>
+            </div>
+
+        </main>
     </div>
 
     <script>
-        // 3D TILT LOGIC //
-        // This creates the "Physical Glass" feel
-        document.addEventListener('mousemove', (e) => {
-            const cards = document.querySelectorAll('.glass-card[data-tilt]');
-            
-            const x = e.clientX;
-            const y = e.clientY;
-            
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-            
-            // Calculate center of screen
-            const centerX = windowWidth / 2;
-            const centerY = windowHeight / 2;
-            
-            // Mouse percent from center (-1 to 1)
-            const percentX = (x - centerX) / centerX;
-            const percentY = (y - centerY) / centerY;
-            
-            cards.forEach(card => {
-                const rect = card.getBoundingClientRect();
-                const cardX = rect.left + rect.width / 2;
-                const cardY = rect.top + rect.height / 2;
-                
-                // Distance from mouse to card center
-                const distX = (x - cardX) / 50;
-                const distY = (y - cardY) / 50;
-                
-                // Apply rotation
-                // Max rotation 5deg to keep it subtle but noticeable
-                const rotateY = Math.max(-5, Math.min(5, distX));
-                const rotateX = Math.max(-5, Math.min(5, -distY));
-                
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
-        });
-
-        // GLITCH TEXT EFFECT FOR NAME
-        const nameElement = document.getElementById('glitch-name');
-        const originalText = nameElement.innerText;
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+        // CANVAS GRID SYSTEM - Soft & Easy on Eyes
+        const canvas = document.getElementById('grid-canvas');
+        const ctx = canvas.getContext('2d');
         
-        nameElement.onmouseover = event => {
-            let iterations = 0;
-            
-            const interval = setInterval(() => {
-                event.target.innerText = event.target.innerText.split("")
-                    .map((letter, index) => {
-                        if(index < iterations) {
-                            return originalText[index];
-                        }
-                        return chars[Math.floor(Math.random() * chars.length)];
-                    })
-                    .join("");
-                
-                if(iterations >= originalText.length) { 
-                    clearInterval(interval);
-                }
-                
-                iterations += 1/3;
-            }, 30);
+        let width, height;
+        let offset = 0;
+        
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
         }
+        
+        window.addEventListener('resize', resize);
+        resize();
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // Ultra-soft grid lines
+            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = "rgba(255, 170, 0, 0.08)";
+            
+            const horizon = height * 0.45;
+            const spacing = 120;
+            
+            // Vertical perspective lines
+            for (let i = -width; i < width * 2; i += spacing) {
+                ctx.beginPath();
+                ctx.moveTo(i, height);
+                const vanishX = width / 2 + (i - width / 2) * 0.15;
+                ctx.lineTo(vanishX, horizon);
+                ctx.stroke();
+            }
+
+            // Horizontal lines with gentle movement
+            offset = (offset + 0.3) % 60;
+            
+            for (let y = horizon; y < height; y += (y - horizon) * 0.08 + 4) {
+                let drawY = y + offset * ((y - horizon) / height);
+                if (drawY > height) drawY -= (height - horizon);
+                
+                ctx.beginPath();
+                ctx.moveTo(0, drawY);
+                ctx.lineTo(width, drawY);
+                ctx.stroke();
+            }
+
+            requestAnimationFrame(drawGrid);
+        }
+
+        drawGrid();
+
+        // DISC 3D INTERACTION
+        const disc = document.getElementById('disc');
+        
+        if (window.matchMedia("(pointer: fine)").matches) {
+            document.addEventListener('mousemove', (e) => {
+                const rect = disc.getBoundingClientRect();
+                const x = (e.clientX - rect.left - rect.width / 2) / 25;
+                const y = (e.clientY - rect.top - rect.height / 2) / 25;
+                
+                disc.style.transform = `rotateX(${20 - y}deg) rotateY(${-10 + x}deg)`;
+            });
+        }
+
+        // SCROLL-TRIGGERED ANIMATIONS (Enhanced fade-in for dynamically loaded content)
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
     </script>
 </body>
 </html>
