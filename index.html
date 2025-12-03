@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ILKIN JAFARLI // PERFECT_SYSTEM</title>
+    <title>ILKIN JAFARLI // ULTIMATE_SYSTEM</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --amber: #ffaa00;
-            --amber-bright: #ffc933;
+            --amber-bright: #ffd966;
             --amber-glow: rgba(255, 170, 0, 0.6);
             --void: #000000;
             --surface: #0a0a0a;
-            --panel: #111111;
-            --text: #e8e8e8;
-            --text-dim: #888888;
+            --text: #f0f0f0;
+            --text-dim: #999;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,16 +28,66 @@
         }
 
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--void); }
+        ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: var(--amber); border-radius: 3px; }
 
-        #grid-canvas {
+        /* === FIXED GPU GRID ENGINE === */
+        .grid-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            z-index: -1;
+            background: #000;
+            perspective: 800px; /* Stronger perspective */
+        }
+
+        .grid-plane {
+            position: absolute;
+            /* CENTER THE PLANE */
+            top: 50%;
+            left: 50%;
+            /* Make it MASSIVE so it covers the screen even when tilted */
+            width: 300vw;
+            height: 300vh;
+            /* Center alignment transform */
+            transform: translate(-50%, -50%) rotateX(60deg);
+            transform-origin: center center;
+            
+            /* The Grid Lines */
+            background-image: 
+                linear-gradient(rgba(255, 170, 0, 0.4) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 170, 0, 0.4) 1px, transparent 1px);
+            background-size: 100px 100px;
+            
+            animation: grid-move 5s linear infinite;
+        }
+
+        /* The fade-out at the horizon */
+        .grid-mask {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            /* Creates the black fog at the top */
+            background: linear-gradient(to bottom, #000 0%, transparent 40%, transparent 80%, #000 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes grid-move {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
+
+        /* PARTICLE CANVAS */
+        #particle-canvas {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 0;
-            opacity: 0.08;
             pointer-events: none;
+            opacity: 0.4;
         }
 
         .chassis {
@@ -48,17 +97,18 @@
             display: grid;
             grid-template-columns: 420px 1fr;
             min-height: 100vh;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            border-left: 1px solid rgba(255,170,0,0.1);
-            border-right: 1px solid rgba(255,170,0,0.1);
-            z-index: 1;
+            /* Transparency to let grid show */
+            background: rgba(5, 5, 5, 0.85); 
+            backdrop-filter: blur(5px);
+            border-left: 1px solid rgba(255,170,0,0.15);
+            border-right: 1px solid rgba(255,170,0,0.15);
+            z-index: 2;
         }
 
         .sidebar {
-            padding: 60px 30px;
-            background: linear-gradient(180deg, rgba(10,10,10,0.95), rgba(0,0,0,0.98));
-            border-right: 1px solid rgba(255,170,0,0.2);
+            padding: 60px 35px;
+            background: linear-gradient(180deg, rgba(10,10,10,0.85), rgba(0,0,0,0.7));
+            border-right: 1px solid rgba(255,170,0,0.25);
             position: relative;
         }
 
@@ -70,76 +120,85 @@
             align-items: center;
         }
 
+        /* RINZLER DISC WITH DEPTH */
         .disc-container {
-            width: 260px;
-            height: 260px;
-            margin-bottom: 40px;
+            width: 270px;
+            height: 270px;
+            margin-bottom: 45px;
             perspective: 1200px;
             position: relative;
         }
 
         .disc-3d {
-            width: 100%;
-            height: 100%;
+            width: 230px;
+            height: 230px;
             position: relative;
             transform-style: preserve-3d;
-            transform: rotateX(20deg) rotateY(-10deg);
-            transition: transform 0.15s ease-out;
-            animation: discFloat 8s ease-in-out infinite;
+            transform: rotateX(25deg) rotateY(-20deg);
+            will-change: transform;
         }
 
-        @keyframes discFloat {
-            0%, 100% { transform: rotateX(20deg) rotateY(-10deg) translateZ(0); }
-            50% { transform: rotateX(25deg) rotateY(-5deg) translateZ(20px); }
-        }
-
-        .disc-layer {
+        .disc-face {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
+            border-radius: 50%;
+            backface-visibility: visible;
         }
 
-        .layer-back { transform: translateZ(-15px); opacity: 0.3; filter: brightness(0.4); }
-        .layer-mid { transform: translateZ(-8px); opacity: 0.5; filter: brightness(0.6); }
-        .layer-main { transform: translateZ(0px); }
-        .layer-glow { transform: translateZ(8px); opacity: 0.25; filter: blur(4px); }
+        /* Depth layers (ribs) */
+        .face-back { transform: translateZ(-18px); background: #000; border: 2px solid #222; box-shadow: 0 0 40px rgba(255,170,0,0.2); }
+        .rib-1 { transform: translateZ(-14px); border: 3px solid #1a1a1a; }
+        .rib-2 { transform: translateZ(-10px); border: 3px solid #222; }
+        .rib-3 { transform: translateZ(-6px); border: 3px solid #2a2a2a; }
+        .rib-4 { transform: translateZ(-2px); border: 3px solid #333; }
+        .rib-5 { transform: translateZ(2px); border: 3px solid #3a3a3a; }
+        .face-front {
+            transform: translateZ(12px);
+            background: radial-gradient(circle, rgba(20,20,20,0.3) 40%, rgba(0,0,0,0.7) 100%);
+        }
 
         .rinzler-svg {
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 0 20px rgba(255,170,0,0.4));
+            overflow: visible;
         }
 
-        .disc-segment {
+        /* Hexagonal segments */
+        .hex-segment {
             fill: #0a0a0a;
-            stroke: #222;
+            stroke: #333;
             stroke-width: 0.5;
         }
 
-        .light-channel {
+        /* Light channels */
+        .light-ring {
             fill: none;
             stroke: var(--amber);
-            stroke-width: 2;
+            stroke-width: 2.5;
             stroke-linecap: round;
         }
 
-        .light-channel.bright {
+        .light-ring-bright {
+            fill: none;
             stroke: var(--amber-bright);
-            stroke-width: 3;
+            stroke-width: 3.5;
             filter: drop-shadow(0 0 8px var(--amber));
         }
 
-        .spin-outer { transform-origin: center; animation: spin 12s linear infinite; }
-        .spin-inner { transform-origin: center; animation: spin-reverse 8s linear infinite; }
-        .pulse-ring { animation: pulse 3s ease-in-out infinite; }
+        /* Animations */
+        .spin-cw { transform-origin: center; animation: spin 14s linear infinite; }
+        .spin-ccw { transform-origin: center; animation: spin-rev 10s linear infinite; }
+        .pulse-core { animation: pulse 3s ease-in-out infinite; }
 
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes spin-reverse { to { transform: rotate(-360deg); } }
+        @keyframes spin-rev { to { transform: rotate(-360deg); } }
         @keyframes pulse {
-            0%, 100% { opacity: 0.7; }
-            50% { opacity: 1; filter: drop-shadow(0 0 15px var(--amber)); }
+            0%, 100% { opacity: 0.75; }
+            50% { opacity: 1; filter: drop-shadow(0 0 20px var(--amber)); }
         }
 
+        /* NAME WITH GLITCH */
         .name-block {
             text-align: center;
             margin-bottom: 35px;
@@ -153,8 +212,16 @@
             color: #fff;
             text-transform: uppercase;
             letter-spacing: 2px;
-            text-shadow: 0 0 20px rgba(255,170,0,0.3);
             margin-bottom: 12px;
+            position: relative;
+            animation: glitch 8s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { text-shadow: 0 0 20px rgba(255,170,0,0.3); }
+            91% { text-shadow: 2px 0 var(--amber), -2px 0 cyan; }
+            92% { text-shadow: -2px 0 var(--amber), 2px 0 cyan; }
+            93% { text-shadow: 0 0 20px rgba(255,170,0,0.3); }
         }
 
         .role-tag {
@@ -167,9 +234,10 @@
             background: rgba(255,170,0,0.05);
         }
 
+        /* MODULES */
         .module {
             width: 100%;
-            margin-bottom: 35px;
+            margin-bottom: 32px;
         }
 
         .module-title {
@@ -189,7 +257,7 @@
         }
 
         .metric-box {
-            background: rgba(20,20,20,0.8);
+            background: rgba(20,20,20,0.7);
             border: 1px solid #2a2a2a;
             padding: 14px 8px;
             text-align: center;
@@ -211,6 +279,7 @@
         .metric-box:hover {
             border-color: var(--amber);
             box-shadow: 0 0 15px rgba(255,170,0,0.15);
+            transform: translateY(-2px);
         }
 
         .metric-box:hover::before { transform: scaleX(1); }
@@ -230,6 +299,7 @@
             letter-spacing: 1px;
         }
 
+        /* ACHIEVEMENTS */
         .achievement {
             display: flex;
             align-items: center;
@@ -262,6 +332,7 @@
             color: var(--text-dim);
         }
 
+        /* LINKS */
         .link-item {
             display: flex;
             justify-content: space-between;
@@ -278,6 +349,7 @@
             padding-left: 10px;
         }
 
+        /* MAIN CONTENT */
         .main-content {
             padding: 80px 60px;
             position: relative;
@@ -286,6 +358,9 @@
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
+        }
+
+        .fade-in.visible {
             animation: fadeIn 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
 
@@ -329,6 +404,7 @@
             font-size: 1.4rem;
         }
 
+        /* EXPERIENCE */
         .exp-entry {
             border-left: 1px solid #333;
             padding-left: 30px;
@@ -391,6 +467,7 @@
             margin-bottom: 15px;
         }
 
+        /* CLIENT BOXES */
         .client-box {
             margin-top: 25px;
             background: rgba(25,25,25,0.6);
@@ -447,6 +524,7 @@
             font-size: 1.2rem;
         }
 
+        /* SKILLS */
         .skill-grid {
             display: flex;
             flex-wrap: wrap;
@@ -470,6 +548,7 @@
             transform: translateY(-3px);
         }
 
+        /* CTA */
         .cta-zone {
             margin-top: 80px;
             padding: 45px;
@@ -532,10 +611,12 @@
             color: #000;
         }
 
+        /* RESPONSIVE */
         @media screen and (min-width: 2560px) {
             body { font-size: 18px; }
             .chassis { max-width: 2200px; grid-template-columns: 500px 1fr; }
             .disc-container { width: 320px; height: 320px; }
+            .disc-3d { width: 280px; height: 280px; }
             .name-glitch { font-size: 3.8rem; }
         }
 
@@ -558,7 +639,8 @@
 
         @media screen and (max-width: 600px) {
             body { font-size: 14px; }
-            .disc-container { width: 200px; height: 200px; }
+            .disc-container { width: 220px; height: 220px; }
+            .disc-3d { width: 180px; height: 180px; }
             .name-glitch { font-size: 2.2rem; }
             .main-content { padding: 40px 20px; }
             .cta-buttons { flex-direction: column; }
@@ -575,65 +657,67 @@
 </head>
 <body>
 
-    <canvas id="grid-canvas"></canvas>
+    <div class="grid-container">
+        <div class="grid-plane"></div>
+        <div class="grid-mask"></div>
+    </div>
+    
+    <canvas id="particle-canvas"></canvas>
 
     <div class="chassis">
-        
+
         <aside class="sidebar">
             <div class="sticky-wrapper fade-in">
-                
+
                 <div class="disc-container">
                     <div class="disc-3d" id="disc">
-                        
-                        <div class="disc-layer layer-back">
-                            <svg class="rinzler-svg" viewBox="0 0 200 200">
-                                <circle cx="100" cy="100" r="88" fill="#050505"/>
-                            </svg>
-                        </div>
 
-                        <div class="disc-layer layer-mid">
-                            <svg class="rinzler-svg" viewBox="0 0 200 200">
-                                <circle cx="100" cy="100" r="85" fill="none" stroke="#111" stroke-width="12"/>
-                            </svg>
-                        </div>
+                        <div class="disc-face face-back"></div>
+                        <div class="disc-face rib-1"></div>
+                        <div class="disc-face rib-2"></div>
+                        <div class="disc-face rib-3"></div>
+                        <div class="disc-face rib-4"></div>
+                        <div class="disc-face rib-5"></div>
 
-                        <div class="disc-layer layer-main">
+                        <div class="disc-face face-front">
                             <svg class="rinzler-svg" viewBox="0 0 200 200">
-                                
-                                <g class="spin-outer">
-                                    <path d="M 100,15 L 130,30 L 130,60 L 100,75" class="disc-segment"/>
-                                    <path d="M 100,15 L 70,30 L 70,60 L 100,75" class="disc-segment"/>
-                                    <path d="M 130,60 L 155,100 L 130,140" class="disc-segment"/>
-                                    <path d="M 70,60 L 45,100 L 70,140" class="disc-segment"/>
-                                    <path d="M 130,140 L 130,170 L 100,185" class="disc-segment"/>
-                                    <path d="M 70,140 L 70,170 L 100,185" class="disc-segment"/>
-                                    
-                                    <path d="M 100,20 A 80,80 0 0,1 156,44" class="light-channel bright"/>
-                                    <path d="M 100,180 A 80,80 0 0,1 44,156" class="light-channel bright"/>
+
+                                <g class="spin-cw">
+                                    <path d="M 100,20 L 115,30 L 115,45 L 100,55 Z" class="hex-segment"/>
+                                    <path d="M 100,20 L 85,30 L 85,45 L 100,55 Z" class="hex-segment"/>
+
+                                    <path d="M 130,50 L 145,65 L 145,85 L 130,100 Z" class="hex-segment"/>
+                                    <path d="M 70,50 L 55,65 L 55,85 L 70,100 Z" class="hex-segment"/>
+                                    <path d="M 130,100 L 145,115 L 145,135 L 130,150 Z" class="hex-segment"/>
+                                    <path d="M 70,100 L 55,115 L 55,135 L 70,150 Z" class="hex-segment"/>
+
+                                    <path d="M 100,145 L 115,155 L 115,170 L 100,180 Z" class="hex-segment"/>
+                                    <path d="M 100,145 L 85,155 L 85,170 L 100,180 Z" class="hex-segment"/>
+
+                                    <path d="M 100,25 A 75,75 0 0,1 155,55" class="light-ring-bright"/>
+                                    <path d="M 100,175 A 75,75 0 0,1 45,145" class="light-ring-bright"/>
+                                    <path d="M 45,55 A 75,75 0 0,1 100,25" class="light-ring"/>
+                                    <path d="M 155,145 A 75,75 0 0,1 100,175" class="light-ring"/>
                                 </g>
 
-                                <g class="spin-inner">
-                                    <circle cx="100" cy="100" r="60" fill="none" stroke="#ffaa00" stroke-width="2" stroke-dasharray="15,8,5,8" class="light-channel pulse-ring"/>
-                                    <circle cx="100" cy="100" r="52" fill="none" stroke="#ffaa00" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <g class="spin-ccw">
+                                    <circle cx="100" cy="100" r="62" fill="none" stroke="#ffaa00" stroke-width="2.5" stroke-dasharray="18,10,6,10" class="light-ring"/>
+                                    <circle cx="100" cy="100" r="54" fill="none" stroke="#ffaa00" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>
                                 </g>
 
-                                <circle cx="100" cy="100" r="28" fill="#0a0a0a" stroke="#ffaa00" stroke-width="2"/>
-                                
-                                <rect x="88" y="90" width="4" height="20" fill="#ffaa00"/>
-                                <rect x="86" y="88" width="8" height="2" fill="#ffaa00"/>
-                                <rect x="86" y="110" width="8" height="2" fill="#ffaa00"/>
-                                
-                                <path d="M 106,90 L 106,106 Q 106,110 102,110 L 100,110" fill="none" stroke="#ffaa00" stroke-width="4" stroke-linecap="square"/>
-                                <circle cx="106" cy="90" r="1.5" fill="#fff"/>
-                                <circle cx="102" cy="110" r="1.5" fill="#fff"/>
-                                
-                                <circle cx="100" cy="100" r="38" fill="none" stroke="#222" stroke-width="0.5" stroke-dasharray="2,2"/>
-                            </svg>
-                        </div>
+                                <g class="pulse-core">
+                                    <circle cx="100" cy="100" r="30" fill="#0a0a0a" stroke="#ffaa00" stroke-width="2.5"/>
 
-                        <div class="disc-layer layer-glow">
-                            <svg class="rinzler-svg" viewBox="0 0 200 200">
-                                <circle cx="100" cy="100" r="82" fill="none" stroke="#ffaa00" stroke-width="6" opacity="0.3"/>
+                                    <rect x="87" y="88" width="4" height="24" fill="#ffaa00"/>
+                                    <rect x="85" y="86" width="8" height="2.5" fill="#ffaa00"/>
+                                    <rect x="85" y="111.5" width="8" height="2.5" fill="#ffaa00"/>
+
+                                    <path d="M 107,88 L 107,106 Q 107,112 101,112 L 99,112" fill="none" stroke="#ffaa00" stroke-width="4" stroke-linecap="square"/>
+                                    <circle cx="107" cy="88" r="1.8" fill="#fff"/>
+                                    <circle cx="101" cy="112" r="1.8" fill="#fff"/>
+
+                                    <circle cx="100" cy="100" r="40" fill="none" stroke="#222" stroke-width="0.5" stroke-dasharray="3,3"/>
+                                </g>
                             </svg>
                         </div>
 
@@ -737,13 +821,13 @@
         </aside>
 
         <main class="main-content">
-            
+
             <div class="summary fade-in delay-1">
                 <p>
                     <strong>Web3 Account Manager</strong> with 8+ years scaling crypto and DeFi fintech ecosystems. Selected as <span class="highlight">Binance CIS Regional Coach</span> to educate 50+ investors across structured Web3 curriculum.
                 </p>
                 <p>
-                    Track record: revenue-driving community programs (<span class="highlight">25% platform growth</span>, 2K paid users), support automation reducing ticket volume <span class="highlight">65%</span>, and managing high-value B2B partnerships. Native fluency in CIS markets (Azerbaijani, Russian, Turkish, English).
+                    Track record: revenue-driving community programs (<span class="highlight">25% platform growth</span>, 2K paid users), support automation reducing ticket volume <span class="highlight">65%</span>, and managing high-value B2B partnerships. Native fluency in CIS markets.
                 </p>
             </div>
 
@@ -759,7 +843,7 @@
                 <ul class="bullet-list">
                     <li><strong>Trading Strategy:</strong> Executed CEX/DEX strategies focusing on risk-adjusted returns in volatile markets.</li>
                     <li><strong>Protocol Research:</strong> Analyzed 15+ emerging L1/L2 blockchain solutions, evaluating tokenomics and governance models.</li>
-                    <li><strong>Market Intelligence:</strong> Maintained current knowledge of DeFi trends, regulatory developments, and ecosystem evolution.</li>
+                    <li><strong>Market Intelligence:</strong> Maintained current knowledge of DeFi trends and regulatory developments.</li>
                 </ul>
             </div>
 
@@ -795,7 +879,7 @@
                     <div class="exp-date">DEC 2021 – SEP 2024</div>
                 </div>
                 <span class="exp-company">REHYPE (WEB3 AGENCY)</span>
-                
+
                 <div class="client-box">
                     <div class="client-label">CLIENT: PDS (DeFi Protocol)</div>
                     <ul class="bullet-list">
@@ -832,7 +916,7 @@
             </div>
 
             <div class="section-head fade-in delay-3">ACTIVE SUBROUTINES</div>
-            
+
             <div class="skill-grid fade-in delay-3">
                 <div class="skill-chip">VIP Strategy</div>
                 <div class="skill-chip">Account Management</div>
@@ -863,89 +947,83 @@
     </div>
 
     <script>
-        // CANVAS GRID SYSTEM - Soft & Easy on Eyes
-        const canvas = document.getElementById('grid-canvas');
-        const ctx = canvas.getContext('2d');
-        
-        let width, height;
-        let offset = 0;
-        
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
+        // PARTICLE SYSTEM
+        const partCanvas = document.getElementById('particle-canvas');
+        const partCtx = partCanvas.getContext('2d');
+        let pw, ph;
+
+        function resizePart() {
+            pw = partCanvas.width = window.innerWidth;
+            ph = partCanvas.height = window.innerHeight;
         }
-        
-        window.addEventListener('resize', resize);
-        resize();
+        window.addEventListener('resize', resizePart);
+        resizePart();
 
-        function drawGrid() {
-            ctx.clearRect(0, 0, width, height);
-            
-            // Ultra-soft grid lines
-            ctx.lineWidth = 0.8;
-            ctx.strokeStyle = "rgba(255, 170, 0, 0.08)";
-            
-            const horizon = height * 0.45;
-            const spacing = 120;
-            
-            // Vertical perspective lines
-            for (let i = -width; i < width * 2; i += spacing) {
-                ctx.beginPath();
-                ctx.moveTo(i, height);
-                const vanishX = width / 2 + (i - width / 2) * 0.15;
-                ctx.lineTo(vanishX, horizon);
-                ctx.stroke();
-            }
-
-            // Horizontal lines with gentle movement
-            offset = (offset + 0.3) % 60;
-            
-            for (let y = horizon; y < height; y += (y - horizon) * 0.08 + 4) {
-                let drawY = y + offset * ((y - horizon) / height);
-                if (drawY > height) drawY -= (height - horizon);
-                
-                ctx.beginPath();
-                ctx.moveTo(0, drawY);
-                ctx.lineTo(width, drawY);
-                ctx.stroke();
-            }
-
-            requestAnimationFrame(drawGrid);
-        }
-
-        drawGrid();
-
-        // DISC 3D INTERACTION
-        const disc = document.getElementById('disc');
-        
-        if (window.matchMedia("(pointer: fine)").matches) {
-            document.addEventListener('mousemove', (e) => {
-                const rect = disc.getBoundingClientRect();
-                const x = (e.clientX - rect.left - rect.width / 2) / 25;
-                const y = (e.clientY - rect.top - rect.height / 2) / 25;
-                
-                disc.style.transform = `rotateX(${20 - y}deg) rotateY(${-10 + x}deg)`;
+        const particles = [];
+        for (let i = 0; i < 40; i++) {
+            particles.push({
+                x: Math.random() * pw,
+                y: Math.random() * ph,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                size: Math.random() * 2 + 0.5,
+                alpha: Math.random() * 0.5 + 0.3
             });
         }
 
-        // SCROLL-TRIGGERED ANIMATIONS (Enhanced fade-in for dynamically loaded content)
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
+        function drawParticles() {
+            partCtx.clearRect(0, 0, pw, ph);
 
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > pw) p.vx *= -1;
+                if (p.y < 0 || p.y > ph) p.vy *= -1;
+
+                partCtx.fillStyle = `rgba(255,170,0,${p.alpha})`;
+                partCtx.beginPath();
+                partCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                partCtx.fill();
+            });
+
+            requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+
+        // DISC LERP PHYSICS
+        const disc = document.getElementById('disc');
+        let targetRotX = 25, targetRotY = -20;
+        let currentRotX = 25, currentRotY = -20;
+        const ease = 0.08;
+
+        if (window.matchMedia("(pointer: fine)").matches) {
+            window.addEventListener('mousemove', (e) => {
+                const x = (window.innerWidth / 2 - e.pageX) / 25;
+                const y = (window.innerHeight / 2 - e.pageY) / 25;
+                targetRotY = -20 + x;
+                targetRotX = 25 + y;
+            });
+        }
+
+        function animateDisc() {
+            currentRotX += (targetRotX - currentRotX) * ease;
+            currentRotY += (targetRotY - currentRotY) * ease;
+            disc.style.transform = `rotateX(${currentRotX}deg) rotateY(${currentRotY}deg)`;
+            requestAnimationFrame(animateDisc);
+        }
+        animateDisc();
+
+        // SCROLL OBSERVER
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+                    entry.target.classList.add('visible');
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.1, rootMargin: '0px 0px -100px 0px' });
 
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>
